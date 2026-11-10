@@ -43,4 +43,15 @@ class RemoteStartControllerTest {
         assertThat(response).hasStatus(HttpStatus.NOT_FOUND);
         assertThat(response).bodyJson().extractingPath("$.code").isEqualTo("CHARGE_POINT_NOT_FOUND");
     }
+
+    @Test
+    void refusedStartReturns409WithCode() {
+        when(service.requestRemoteStart("CP-7"))
+                .thenReturn(RemoteStartResult.refused(RemoteStartError.IN_MAINTENANCE));
+
+        var response = mvc.post().uri("/api/charge-points/CP-7/remote-start").exchange();
+
+        assertThat(response).hasStatus(HttpStatus.CONFLICT);
+        assertThat(response).bodyJson().extractingPath("$.code").isEqualTo("IN_MAINTENANCE");
+    }
 }

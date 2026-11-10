@@ -42,4 +42,11 @@ describe('ChargePointDetail', () => {
     expect(fetch).toHaveBeenCalledWith('/api/charge-points/CP-1/remote-start', { method: 'POST' })
     expect(wrapper.get('[role=status]').text()).toContain('Session started')
   })
+
+  it('AC3: remote start is disabled in maintenance', async () => {
+    const wrapper = await mountDetail({ id: 'CP-7', location: 'München', status: 'IN_MAINTENANCE' })
+
+    expect(wrapper.get('button').attributes()).toHaveProperty('disabled')
+    expect(wrapper.text()).toContain('In maintenance')
+  })
 })

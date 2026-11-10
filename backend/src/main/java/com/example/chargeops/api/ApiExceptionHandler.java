@@ -13,6 +13,7 @@ public class ApiExceptionHandler {
     public ProblemDetail handle(ApiException e) {
         var status = switch (e.code()) {
             case CHARGE_POINT_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CHARGE_POINT_OFFLINE, IN_MAINTENANCE -> HttpStatus.CONFLICT;
         };
         var problem = ProblemDetail.forStatusAndDetail(status, e.code().name());
         problem.setProperty("code", e.code().name());
