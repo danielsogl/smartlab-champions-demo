@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw * test *)",
+      "Bash(npm --prefix frontend run *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git status)"
+    ],
+    "ask": [
+      "Bash(git push *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./**/application-local.yml)",
+      "Read(./**/target/**)",
+      "Read(./frontend/node_modules/**)",
+      "Read(./frontend/dist/**)"
+    ]
+  }
+}
