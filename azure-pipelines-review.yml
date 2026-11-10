@@ -1,0 +1,32 @@
+# Agent review on every PR. It comments; a required reviewer approves.
+# Add it as a second build validation in the main branch policy.
+# Needs the secret pipeline variable ANTHROPIC_API_KEY, and the project's
+# Build Service identity needs "Contribute to pull requests" on this repo.
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+    fetchDepth: 0
+  - task: UseNode@1
+    inputs: { version: '24.x' }
+  - script: npm install -g @anthropic-ai/claude-code
+  # Review rules come from the target branch, so a PR cannot weaken its own review.
+  - script: |
+      BASE="${TARGET#refs/heads/}"
+      git show "origin/$BASE:REVIEW.md" > "$(Agent.TempDirectory)/REVIEW.md"
+      claude -p "Review the diff of this branch against origin/$BASE
+      (git diff origin/$BASE...HEAD). Follow the rules in $(Agent.TempDirectory)/REVIEW.md.
+      Read the linked spec.md and plan.md first." \
+        --allowedTools "Read,Grep,Glob,Bash(git diff *),Bash(git log *)" \
+        --permission-mode dontAsk --max-turns 20 > review.md
+    displayName: Review
+    env:
+      ANTHROPIC_API_KEY: $(ANTHROPIC_API_KEY)
+      TARGET: $(System.PullRequest.TargetBranch)
+  - script: .pipelines/post-pr-comment.sh review.md
+    displayName: Comment on PR
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
