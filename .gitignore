@@ -1,0 +1,17 @@
+target/
+node_modules/
+dist/
+.env
+*.local.yml
+application-local.yml
+.claude/settings.local.json
+CLAUDE.local.md
+.idea/
+.vscode/
+.project
+.classpath
+.settings/
+.factorypath
+*.log
+frontend/cypress/videos/
+frontend/cypress/screenshots/
