@@ -39,3 +39,29 @@ Each module of the training moves ticket DEMO-42 one step. Every step is a tag:
 | `step-6-review` | 6 | REVIEW.md, reviewer subagent, `azure-pipelines-review.yml` |
 
 `git switch -c try-3 step-3-tests` starts a branch at any step.
+
+## Before the demo
+
+1. Open the repo once with `claude` and accept the trust dialog. Until then Claude Code ignores
+   the allow rules in `.claude/settings.json` (and headless runs print a warning).
+2. `./mvnw -q -pl backend test` and `pnpm install` once, so the offline compile in
+   the PostToolUse hook finds every dependency.
+3. Review demo without a PR (step 6), same call as in CI:
+
+```bash
+claude -p "Review the diff step-2-spec...step-3-tests. Follow REVIEW.md. \
+Read the linked spec.md and plan.md first." \
+  --allowedTools "Read,Grep,Glob,Bash(git diff *),Bash(git log *)" \
+  --permission-mode dontAsk --max-turns 20
+```
+
+## Azure DevOps setup
+
+In the training both pipelines are templates; the review runs locally (step 3 above).
+To use them in your own project:
+
+1. Main branch policy: `azure-pipelines.yml` and `azure-pipelines-review.yml` as build validations,
+   at least one required reviewer, "Allow requestors to approve their own changes" off.
+2. Review pipeline: secret variable `ANTHROPIC_API_KEY`.
+3. Project settings, Repositories, Security: "<project> Build Service" gets
+   "Contribute to pull requests", so the review can post its comment.
