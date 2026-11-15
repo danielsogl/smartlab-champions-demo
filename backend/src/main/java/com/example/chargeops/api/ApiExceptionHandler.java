@@ -13,8 +13,7 @@ public class ApiExceptionHandler {
     public ProblemDetail handle(ApiException e) {
         var status = switch (e.code()) {
             case CHARGE_POINT_NOT_FOUND -> HttpStatus.NOT_FOUND;
-            // Placeholder so the RED tests compile; GREEN maps these to 409
-            case CHARGE_POINT_OFFLINE, CHARGE_POINT_INOPERATIVE -> HttpStatus.INTERNAL_SERVER_ERROR;
+            case CHARGE_POINT_OFFLINE, CHARGE_POINT_INOPERATIVE -> HttpStatus.CONFLICT;
         };
         var problem = ProblemDetail.forStatusAndDetail(status, e.code().name());
         problem.setProperty("code", e.code().name());

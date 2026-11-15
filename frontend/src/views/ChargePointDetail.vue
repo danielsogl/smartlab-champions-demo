@@ -1,11 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { ApiError, getChargePoint, requestRemoteStart, type ChargePoint } from '@/api'
+import { computed, onMounted, ref } from 'vue'
+import {
+  ApiError,
+  getChargePoint,
+  requestRemoteStart,
+  type ChargePoint,
+  type ChargePointStatus,
+} from '@/api'
 
 const props = defineProps<{ id: string }>()
 
 const chargePoint = ref<ChargePoint>()
 const message = ref('')
+
+// DEMO-42: the backend checks again on click (AC1, AC2); this only explains why.
+const blockedReasons: Partial<Record<ChargePointStatus, string>> = {
+  OFFLINE: 'Offline',
+  UNKNOWN: 'Offline',
+  INOPERATIVE: 'In maintenance',
+}
+const blockedReason = computed(() => chargePoint.value && blockedReasons[chargePoint.value.status])
 
 onMounted(async () => {
   chargePoint.value = await getChargePoint(props.id)
@@ -29,9 +43,18 @@ async function start() {
     <p>
       Status: <span class="status">{{ chargePoint.status }}</span>
     </p>
-    <button @click="start">
+    <button
+      :disabled="!!blockedReason"
+      @click="start"
+    >
       Remote start
     </button>
+    <p
+      v-if="blockedReason"
+      class="message"
+    >
+      Remote start not possible: {{ blockedReason }}
+    </p>
     <output
       v-if="message"
       class="message"

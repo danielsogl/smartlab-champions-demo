@@ -25,9 +25,23 @@ public class ChargePointService {
     }
 
     public RemoteStartResult requestRemoteStart(String chargePointId) {
-        if (chargePoints.findById(chargePointId).isEmpty()) {
+        var chargePoint = chargePoints.findById(chargePointId);
+        if (chargePoint.isEmpty()) {
             return RemoteStartResult.refused(RemoteStartError.CHARGE_POINT_NOT_FOUND);
         }
+        var refusal = refusalFor(chargePoint.get().status());
+        if (refusal != null) {
+            return RemoteStartResult.refused(refusal);
+        }
         return RemoteStartResult.accepted(commandGateway.sendStart(chargePointId));
+    }
+
+    /** DEMO-42: UNKNOWN counts as offline (spec.md, open questions). */
+    private static RemoteStartError refusalFor(ChargePointStatus status) {
+        return switch (status) {
+            case OFFLINE, UNKNOWN -> RemoteStartError.CHARGE_POINT_OFFLINE;
+            case INOPERATIVE -> RemoteStartError.CHARGE_POINT_INOPERATIVE;
+            case AVAILABLE, CHARGING -> null;
+        };
     }
 }
