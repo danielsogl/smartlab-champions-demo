@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw -q -pl backend test)",
+      "Bash(./mvnw -q -pl backend test -Dtest=*)",
+      "Bash(pnpm -C frontend *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git status)"
+    ],
+    "ask": [
+      "Bash(git push *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./**/application-local.yml)",
+      "Read(./**/target/**)",
+      "Read(./frontend/node_modules/**)",
+      "Read(./frontend/dist/**)"
+    ]
+  }
+}
