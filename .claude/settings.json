@@ -16,7 +16,38 @@
       "Read(./**/application-local.yml)",
       "Read(./**/target/**)",
       "Read(./frontend/node_modules/**)",
-      "Read(./frontend/dist/**)"
+      "Read(./frontend/dist/**)",
+      "Edit(./.claude/hooks/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/check-file.mjs"
+            ]
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify.mjs"
+            ],
+            "timeout": 600
+          }
+        ]
+      }
     ]
   }
 }
