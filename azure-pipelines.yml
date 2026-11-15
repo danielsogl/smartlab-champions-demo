@@ -1,0 +1,34 @@
+# Tier 3: everything too slow for the inner loop.
+# Runs on main and, as build validation in the main branch policy, on every PR.
+trigger:
+  branches:
+    include: [main]
+
+# smartlab Managed DevOps Pool. Elsewhere: vmImage: ubuntu-latest
+pool: azure-devops-managed-agent-pool
+
+jobs:
+  - job: backend
+    steps:
+      - task: JavaToolInstaller@0
+        inputs: { versionSpec: '25', jdkArchitectureOption: x64, jdkSourceOption: PreInstalled }
+      - script: ./mvnw -B -pl backend verify
+
+  - job: frontend
+    steps:
+      - task: NodeTool@0
+        inputs: { versionSpec: '24.x' }
+      - script: corepack enable && pnpm install --frozen-lockfile
+      - script: pnpm -C frontend lint && pnpm -C frontend test:unit
+
+  - job: e2e
+    dependsOn: [backend, frontend]
+    steps:
+      - task: JavaToolInstaller@0
+        inputs: { versionSpec: '25', jdkArchitectureOption: x64, jdkSourceOption: PreInstalled }
+      - task: NodeTool@0
+        inputs: { versionSpec: '24.x' }
+      - script: ./mvnw -B -q -pl backend package -DskipTests
+      - script: java -jar backend/target/backend-0.0.1-SNAPSHOT.jar &
+      - script: corepack enable && pnpm install --frozen-lockfile
+      - script: pnpm -C frontend build && pnpm -C frontend test:e2e
