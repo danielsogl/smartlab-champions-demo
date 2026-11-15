@@ -3,6 +3,7 @@ package com.example.chargeops.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -42,5 +43,17 @@ class RemoteStartControllerTest {
 
         assertThat(response).hasStatus(HttpStatus.NOT_FOUND);
         assertThat(response).bodyJson().extractingPath("$.code").isEqualTo("CHARGE_POINT_NOT_FOUND");
+    }
+
+    @Test
+    @DisplayName("AC2: a refused start returns 409 with the code")
+    void refusedStartReturns409WithCode() {
+        when(service.requestRemoteStart("CP-7"))
+                .thenReturn(RemoteStartResult.refused(RemoteStartError.CHARGE_POINT_INOPERATIVE));
+
+        var response = mvc.post().uri("/api/charge-points/CP-7/remote-start").exchange();
+
+        assertThat(response).hasStatus(HttpStatus.CONFLICT);
+        assertThat(response).bodyJson().extractingPath("$.code").isEqualTo("CHARGE_POINT_INOPERATIVE");
     }
 }
