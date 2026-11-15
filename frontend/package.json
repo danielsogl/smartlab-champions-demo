@@ -1,0 +1,43 @@
+{
+  "name": "charge-ops-frontend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --build && vite build",
+    "preview": "vite preview",
+    "test:unit": "vitest run",
+    "lint": "eslint . && vue-tsc --build",
+    "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'"
+  },
+  "dependencies": {
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@tsconfig/node24": "catalog:",
+    "@types/jsdom": "catalog:",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vitest/eslint-plugin": "catalog:",
+    "@vue/eslint-config-typescript": "catalog:",
+    "@vue/test-utils": "catalog:",
+    "@vue/tsconfig": "catalog:",
+    "cypress": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-cypress": "catalog:",
+    "eslint-plugin-vue": "catalog:",
+    "jiti": "catalog:",
+    "jsdom": "catalog:",
+    "start-server-and-test": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "vue-eslint-parser": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.12.0"
+  }
+}

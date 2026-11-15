@@ -1,0 +1,9 @@
+body { font-family: system-ui, sans-serif; margin: 0; color: #1f2933; }
+header { padding: 1rem 2rem; background: #0b3954; }
+header a { color: #fff; font-weight: 700; text-decoration: none; }
+main { padding: 2rem; max-width: 48rem; }
+table { border-collapse: collapse; width: 100%; }
+td, th { text-align: left; padding: .5rem; border-bottom: 1px solid #e4e7eb; }
+.status { font-size: .85rem; padding: .1rem .5rem; border-radius: 1rem; background: #e4e7eb; }
+button { padding: .5rem 1rem; font-size: 1rem; }
+.message { display: block; margin-top: 1rem; }
