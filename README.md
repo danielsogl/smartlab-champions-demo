@@ -42,6 +42,8 @@ Each module of the training moves ticket DEMO-42 one step. Every step is a tag:
 
 ## Before the demo
 
+`demo/live.sh 3|4|5|6` puts each live demo on its own branch and prints the prompts.
+
 1. Open the repo once with `claude` and accept the trust dialog. Until then Claude Code ignores
    the allow rules in `.claude/settings.json` (and headless runs print a warning).
 2. `./mvnw -q -pl backend test` and `pnpm install` once, so the offline compile in
