@@ -3,6 +3,8 @@
 Demo repository for the smartlab champions training, 16 Nov 2026.
 A small back-office app: operators see charge points and start a charging session remotely.
 
+Slides of the training: [slides.pdf](slides.pdf)
+
 - `backend/`: Spring Boot 4, Java 25, Maven (`./mvnw`)
 - `frontend/`: Vue 3, Vite, Vitest, Cypress, pnpm workspace with a catalog
 
